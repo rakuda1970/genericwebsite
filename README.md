@@ -1,11 +1,148 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Project Dev Notes
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Last updated: March 18, 2026
+
+## Table of Contents
+
+- [Stack](#stack)
+- [Project Structure](#project-structure)
+- [Authentication](#authentication)
+- [Layout & Header](#layout--header)
+- [Home Page](#home-page)
+- [Dashboard](#dashboard)
+- [Known Fixes Applied](#known-fixes-applied)
+- [Running the App](#running-the-app)
+
+---
+
+## Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Laravel 11 |
+| Frontend CSS | Bootstrap 5.3.3 (CDN) |
+| Icons | Font Awesome 6.5 (CDN) |
+| Build tool | Vite (configured but CDN used in dev) |
+| Database | MySQL (configured in `.env`) |
+
+---
+
+## Project Structure
+
+```
+app/Http/Controllers/Auth/   ← Auth controllers
+app/Http/Requests/Auth/      ← Form request validation
+app/Models/User.php          ← User model
+resources/views/
+  layouts/
+    app.blade.php            ← Main layout (header, Bootstrap, mega-menu JS)
+    auth.blade.php           ← Minimal layout for auth pages
+  partials/
+    header.blade.php         ← Two-tier fixed header (logo/search + red nav bar)
+  auth/
+    login.blade.php
+    register.blade.php
+    forgot-password.blade.php
+    reset-password.blade.php
+  welcome.blade.php          ← Home page (banner rotator)
+  dashboard.blade.php        ← Authenticated user dashboard
+routes/web.php               ← All web routes
+public/images/banners/       ← SVG banner images (desktop + mobile variants)
+```
+
+---
+
+## Authentication
+
+Full custom auth flow — **no Laravel Breeze/Jetstream**.
+
+| Route | Method | Controller | Notes |
+|---|---|---|---|
+| `/register` | GET / POST | `RegisterController` | `RegisterRequest` validates input |
+| `/login` | GET / POST | `LoginController` | `LoginRequest` validates + throttled |
+| `/forgot-password` | GET / POST | `ForgotPasswordController` | Throttled 6/min |
+| `/reset-password/{token}` | GET / POST | `ResetPasswordController` | |
+| `/logout` | POST | `LogoutController` | Auth-protected |
+| `/dashboard` | GET | closure | Auth-protected |
+
+- Guest routes are wrapped in `middleware('guest')` — logged-in users are redirected away.
+- Protected routes are wrapped in `middleware('auth')`.
+
+---
+
+## Layout & Header
+
+**File:** [`resources/views/layouts/app.blade.php`](resources/views/layouts/app.blade.php)
+
+- Loads Bootstrap 5.3.3 and Font Awesome 6.5 from CDN.
+- Includes [`resources/views/partials/header.blade.php`](resources/views/partials/header.blade.php).
+- Supports `@stack('styles')` and `@stack('scripts')` for per-page assets.
+- Contains vanilla JS for **mega-menu panels** (positioned fixed, below the header).
+
+**File:** [`resources/views/partials/header.blade.php`](resources/views/partials/header.blade.php)
+
+- **Tier 1:** Logo · Search bar · Login/Account icon · Cart icon.
+- **Tier 2:** Red Bootstrap navbar — Products, Brands, New, Sales (left) | Lead Time, Services, Tools (right).
+- Products and Brands use custom **mega-menu** panels (rendered outside `<header>` so `position: fixed` works).
+- Hamburger menu on mobile is wired with **vanilla JS** (Bootstrap data-api disabled to avoid event conflicts — see [Known Fixes](#known-fixes-applied)).
+- Auth-aware: shows account icon linking to `/dashboard` when logged in, `/login` when guest.
+
+---
+
+## Home Page
+
+**File:** [`resources/views/welcome.blade.php`](resources/views/welcome.blade.php)
+
+- Extends `layouts.app`.
+- Contains a **responsive banner rotator** (3 slides, 5-second auto-advance).
+  - Uses `<picture>` + `<source media="(max-width: 767px)">` to serve mobile SVGs on small screens and desktop SVGs on large screens.
+  - Images live in [`public/images/banners/`](public/images/banners/): `easy_peasy`, `frankly`, `hello_world` — each with `_desktop.svg` and `_mobile.svg` variants.
+  - Small round dot indicators (10 px, grey hollow → red solid when active).
+  - Implemented in **vanilla JS** (CSS `translateX` track + direct click listeners on dot buttons — no Bootstrap carousel, see [Known Fixes](#known-fixes-applied)).
+
+---
+
+## Dashboard
+
+**File:** [`resources/views/dashboard.blade.php`](resources/views/dashboard.blade.php)
+
+- Extends `layouts.app` (same header as the home page).
+- Displays a welcome card with the authenticated user's name and email.
+- Route is auth-protected (`middleware('auth')`).
+
+---
+
+## Known Fixes Applied
+
+### Bootstrap JS data-API conflicts
+
+The site uses a custom mega-menu that calls `e.stopPropagation()` on `document` click events. This blocks Bootstrap's event-delegation-based data-API from working, which caused two issues:
+
+1. **Carousel indicators did nothing** — Fixed by replacing Bootstrap's carousel component entirely with a self-contained vanilla JS rotator (flex track + `translateX`).
+2. **Hamburger menu did nothing** — Fixed by removing `data-bs-toggle` at runtime and wiring the collapse toggle manually via vanilla JS.
+
+---
+
+## Running the App
+
+```bash
+# Install PHP dependencies
+composer install
+
+# Copy and configure environment
+cp .env.example .env
+php artisan key:generate
+
+# Run migrations
+php artisan migrate
+
+# Start the dev server
+php artisan serve
+```
+
+Visit [http://localhost:8000](http://localhost:8000).
+
+---
 
 ## About Laravel
 

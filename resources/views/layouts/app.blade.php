@@ -180,6 +180,20 @@
             positionMegaPanels();
             window.addEventListener('resize', positionMegaPanels);
 
+            // ── Navbar hamburger toggle (vanilla JS) ──────────────
+            var navToggler = document.querySelector('#site-header .navbar-toggler');
+            if (navToggler) {
+                var navMenu = document.querySelector(navToggler.getAttribute('data-bs-target'));
+                if (navMenu) {
+                    navToggler.removeAttribute('data-bs-toggle'); // prevent Bootstrap data-api double-firing
+                    navToggler.addEventListener('click', function () {
+                        var isOpen = navMenu.classList.toggle('show');
+                        navToggler.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                        navToggler.classList.toggle('collapsed', !isOpen);
+                    });
+                }
+            }
+
             // Bind toggle buttons
             document.querySelectorAll('.mega-toggle').forEach(function (btn) {
                 btn.addEventListener('click', function (e) {
