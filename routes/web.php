@@ -5,11 +5,21 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// ─── Product listing routes ───────────────────────────────────────────────────
+Route::get('/products',                        [SearchController::class, 'index'])->name('products.index');
+Route::get('/products/new',                    [ProductController::class, 'newArrivals'])->name('products.new');
+Route::get('/products/{year}',                 [ProductController::class, 'byYear'])->name('products.year')->where('year', '[0-9]{4}');
+Route::get('/products/category/{id}',          [ProductController::class, 'byCategory'])->name('products.category');
+Route::get('/products/brand/{id}',             [ProductController::class, 'byBrand'])->name('products.brand');
+Route::get('/products/collection/{id}',        [ProductController::class, 'byCollection'])->name('products.collection');
 
 // ─── Guest-only routes ────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {

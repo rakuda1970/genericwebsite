@@ -185,7 +185,7 @@
             if (navToggler) {
                 var navMenu = document.querySelector(navToggler.getAttribute('data-bs-target'));
                 if (navMenu) {
-                    navToggler.removeAttribute('data-bs-toggle'); // prevent Bootstrap data-api double-firing
+                    navToggler.removeAttribute('data-bs-toggle');
                     navToggler.addEventListener('click', function () {
                         var isOpen = navMenu.classList.toggle('show');
                         navToggler.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -193,6 +193,50 @@
                     });
                 }
             }
+
+            // ── Bootstrap dropdown menus (vanilla JS) ─────────────
+            // Remove data-bs-toggle so the data-API doesn't interfere, then
+            // wire each toggle directly. One open at a time.
+            document.querySelectorAll('#site-header [data-bs-toggle="dropdown"]').forEach(function (toggle) {
+                toggle.removeAttribute('data-bs-toggle');
+                var menu = toggle.nextElementSibling;
+                if (!menu || !menu.classList.contains('dropdown-menu')) return;
+
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var isOpen = menu.classList.contains('show');
+
+                    // Close all open dropdowns first
+                    document.querySelectorAll('#site-header .dropdown-menu.show').forEach(function (m) {
+                        m.classList.remove('show');
+                        m.previousElementSibling && m.previousElementSibling.setAttribute('aria-expanded', 'false');
+                    });
+
+                    // Also close mega panels
+                    document.querySelectorAll('.mega-panel').forEach(function (p) { p.classList.remove('mega-open'); });
+                    document.querySelectorAll('.mega-toggle').forEach(function (t) {
+                        t.setAttribute('aria-expanded', 'false');
+                        t.classList.remove('active');
+                    });
+
+                    if (!isOpen) {
+                        menu.classList.add('show');
+                        toggle.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('#site-header .dropdown')) {
+                    document.querySelectorAll('#site-header .dropdown-menu.show').forEach(function (m) {
+                        m.classList.remove('show');
+                        m.previousElementSibling && m.previousElementSibling.setAttribute('aria-expanded', 'false');
+                    });
+                }
+            });
 
             // Bind toggle buttons
             document.querySelectorAll('.mega-toggle').forEach(function (btn) {
