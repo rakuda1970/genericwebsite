@@ -6,6 +6,34 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('app.name', 'App'))</title>
 
+    {{-- Google Fonts --}}
+    @php
+        $fontFamilies = [
+            'default'      => ['family' => '"Caladea", serif',       'url' => 'https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&display=swap'],
+            'source-sans-3'=> ['family' => '"Source Sans 3", sans-serif', 'url' => 'https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap'],
+        ];
+        $fontKey    = config('app.system_font', 'default');
+        $activeFont = $fontFamilies[$fontKey] ?? $fontFamilies['default'];
+    @endphp
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="{{ $activeFont['url'] }}" rel="stylesheet">
+
+    {{-- Google Fonts --}}
+    @php
+        $fontFamilies = [
+            'default'       => ['family' => '"Caladea", serif',
+                                'url'    => 'https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&display=swap'],
+            'source-sans-3' => ['family' => '"Source Sans 3", sans-serif',
+                                'url'    => 'https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap'],
+        ];
+        $fontKey    = config('app.system_font', 'default');
+        $activeFont = $fontFamilies[$fontKey] ?? $fontFamilies['default'];
+    @endphp
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="{{ $activeFont['url'] }}" rel="stylesheet">
+
     {{-- Bootstrap 5 --}}
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -39,6 +67,7 @@
             @foreach($vars as $prop => $val)
                 {{ $prop }}: {{ $val }};
             @endforeach
+            --system-font: {!! $activeFont['family'] !!};
         }
 
         /* ── Fixed header ──────────────────────────────────── */
@@ -56,6 +85,8 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            font-family: var(--system-font);
+            font-optical-sizing: auto;
         }
 
         main {
@@ -276,8 +307,8 @@
 
         /* ── Nav hover/active indicator ────────────────────── */
         .header-nav .nav-link {
-            font-size: .875rem;
-            font-weight: 500;
+            font-size: .9rem;
+            font-weight: 600;
             white-space: nowrap;
             transition: background .15s;
         }
