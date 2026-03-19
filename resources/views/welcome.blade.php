@@ -51,8 +51,8 @@
         transition: background .2s, border-color .2s;
     }
     .banner-rotator__dot.is-active {
-        background: #dc3545;
-        border-color: #dc3545;
+        background: var(--brand-primary);
+        border-color: var(--brand-primary);
     }
 </style>
 @endpush

@@ -52,7 +52,7 @@
         padding: .35rem .5rem;
     }
     .filter-sidebar .form-select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23dc3545' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='{{ urlencode(config('app.color_scheme') === 'ariel-gray' ? '#717171' : (config('app.color_scheme') === 'ariel-red' ? '#ED1C24' : (config('app.color_scheme') === 'steel-blue' ? '#2993CF' : '#dc3545'))) }}' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right .6rem center;
         padding-right: 1.8rem;
@@ -71,8 +71,8 @@
         font-size: .85rem;
     }
     .filter-sidebar .btn-search {
-        background: #dc3545;
-        border-color: #dc3545;
+        background: var(--brand-primary);
+        border-color: var(--brand-primary);
         color: #fff;
         font-size: .8rem;
         font-weight: 600;
@@ -81,7 +81,7 @@
         border-radius: .25rem;
         margin-top: .25rem;
     }
-    .filter-sidebar .btn-search:hover { background: #bb2d3b; border-color: #bb2d3b; }
+    .filter-sidebar .btn-search:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
     .filter-sidebar .btn-reset {
         background: #e9ecef;
         border-color: #dee2e6;
@@ -114,7 +114,7 @@
     .products-header h1 {
         font-size: 1.6rem;
         font-weight: 700;
-        color: #dc3545;
+        color: var(--brand-primary);
         margin: 0;
     }
     .products-count {
@@ -168,7 +168,7 @@
     }
     .product-card__brand {
         font-size: .75rem;
-        color: #dc3545;
+        color: var(--brand-primary);
         font-weight: 600;
         margin-top: auto;
         padding-top: .375rem;
@@ -199,13 +199,13 @@
         border-color: #d1d5db;
     }
     .pagination-wrap .page-item.active .page-link {
-        background-color: #dc3545;
-        border-color: #dc3545;
+        background-color: var(--brand-primary);
+        border-color: var(--brand-primary);
         color: #fff;
     }
     .pagination-wrap .page-link:hover {
         background: #f3f4f6;
-        color: #dc3545;
+        color: var(--brand-primary);
     }
 
     /* ── Empty state ───────────────────────────────────── */
@@ -343,7 +343,7 @@
         @if($products->isEmpty())
             <div class="empty-state">
                 <p class="mb-1">No products found matching your search.</p>
-                <a href="{{ route('products.index') }}" class="text-danger">Browse all products</a>
+                <a href="{{ route('products.index') }}" style="color: var(--brand-primary)">Browse all products</a>
             </div>
         @else
             {{-- Pagination (top) --}}

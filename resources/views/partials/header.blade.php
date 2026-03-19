@@ -144,7 +144,7 @@
                 <ul class="navbar-nav ms-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link px-3 py-3" href="{{ url('/lead-time') }}">Lead Time</a>
+                        <a class="nav-link px-3 py-3" href="#" id="lt-modal-trigger">Lead Time</a>
                     </li>
 
                     <li class="nav-item dropdown">

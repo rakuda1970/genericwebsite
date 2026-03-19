@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SearchController;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,3 +42,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
     Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
 });
+
+// ─── Internal API proxy ───────────────────────────────────────────────────────
+Route::get('/api/lead-times', function () {
+    try {
+        $response = Http::timeout(10)->get('https://www2.arielpremium.com/api/leadtimes');
+        return response()->json($response->json());
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to fetch lead times'], 502);
+    }
+})->name('api.lead-times');
