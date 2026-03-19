@@ -13,6 +13,11 @@ use Database\Seeders\ProductBrandAssignmentSeeder;
 use Database\Seeders\CollectionSeeder;
 use Database\Seeders\ProductCollectionAssignmentSeeder;
 use Database\Seeders\ProductMetaSeeder;
+use Database\Seeders\ChoosingCommunityProductSeeder;
+use Database\Seeders\ChoosingCommunityMetaSeeder;
+use Database\Seeders\SustainableSolutionsProductSeeder;
+use Database\Seeders\SustainableSolutionsMetaSeeder;
+use Database\Seeders\ProductImageUrlSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,5 +43,10 @@ class DatabaseSeeder extends Seeder
         $this->call(CollectionSeeder::class);
         $this->call(ProductCollectionAssignmentSeeder::class);
         $this->call(ProductMetaSeeder::class);
+        $this->call(ChoosingCommunityProductSeeder::class);
+        $this->call(ChoosingCommunityMetaSeeder::class);
+        $this->call(SustainableSolutionsProductSeeder::class);
+        $this->call(SustainableSolutionsMetaSeeder::class);
+        $this->call(ProductImageUrlSeeder::class);
     }
 }
