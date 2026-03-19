@@ -32,6 +32,146 @@
 
         body {
             padding-top: 112px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* ─────────────────────────────────────────────────────
+           Site footer
+        ───────────────────────────────────────────────────── */
+        .site-footer {
+            background: #dc3545; /* matches header bg-danger nav bar */
+            color: rgba(255,255,255,.85);
+            margin-top: 3rem;
+        }
+
+        /* Top band — matches the red nav bar in the header */
+        .footer-top {
+            padding: 2.5rem 0 2rem;
+            border-bottom: 1px solid rgba(255,255,255,.18);
+            background: #dc3545;
+        }
+        .footer-top-inner {
+            display: flex;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        /* Social block */
+        .footer-social {
+            min-width: 140px;
+        }
+        .footer-social__label {
+            font-size: .8rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: .6rem;
+        }
+        .footer-social__icons {
+            display: flex;
+            gap: 1rem;
+        }
+        .footer-social__link {
+            color: rgba(255,255,255,.8);
+            font-size: 1.15rem;
+            text-decoration: none;
+            transition: color .15s;
+        }
+        .footer-social__link:hover { color: #fff; }
+
+        /* Nav columns */
+        .footer-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem 2.5rem;
+            flex: 1;
+        }
+        .footer-nav__col h6.footer-nav__heading {
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #fff;
+            margin-bottom: .6rem;
+        }
+        .footer-nav__col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-nav__col ul li {
+            margin-bottom: .3rem;
+        }
+        .footer-nav__col ul li a {
+            font-size: .8rem;
+            color: rgba(255,255,255,.8);
+            text-decoration: none;
+            transition: color .15s;
+        }
+        .footer-nav__col ul li a:hover { color: #fff; }
+
+        /* Bottom band — one shade darker to mirror the header-top/header-nav split */
+        .footer-bottom {
+            padding: 1.5rem 0;
+            background: #b02030;
+        }
+        .footer-bottom-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer-logo__text {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            font-style: italic;
+            color: #fff;
+            line-height: 1;
+            letter-spacing: -.02em;
+        }
+        .footer-logo__copy {
+            display: block;
+            font-size: .72rem;
+            color: rgba(255,255,255,.75);
+            margin-top: .25rem;
+        }
+        .footer-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            justify-content: flex-end;
+        }
+        .footer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.25);
+            border-radius: .375rem;
+            padding: .25rem .6rem;
+            font-size: .7rem;
+            color: #fff;
+        }
+        .footer-badge i { font-size: .7rem; }
+        .footer-badge-img-link {
+            display: inline-flex;
+            align-items: center;
+            opacity: .9;
+            transition: opacity .15s;
+        }
+        .footer-badge-img-link:hover { opacity: 1; }
+        .footer-badge-img {
+            height: 52px;
+            width: auto;
+            border-radius: .25rem;
         }
 
         /* ── Mega panels (live outside <header> in the DOM) ── */
@@ -137,6 +277,8 @@
     <main>
         @yield('content')
     </main>
+
+    @include('partials.footer')
 
     {{-- Bootstrap 5 JS bundle --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

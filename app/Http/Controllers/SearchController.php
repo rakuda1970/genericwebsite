@@ -27,37 +27,63 @@ class SearchController extends Controller
      */
     public function index(Request $request): View
     {
-        // Sanitise: trim, hard-cap at 100 chars
+        // Text search — trim, hard-cap at 100 chars
         $q = substr(trim((string) $request->input('q', '')), 0, 100);
+
+        // Sidebar filters
+        $categoryId   = (int) $request->input('category_id', 0);
+        $brandId      = (int) $request->input('brand_id', 0);
+        $collectionId = (int) $request->input('collection_id', 0);
+        $year         = (int) $request->input('year', 0);
+
+        $query = Product::query();
 
         if ($q !== '') {
             $like = '%' . $q . '%';
+            $query->where(function ($sub) use ($like) {
+                $sub->where('item_description', 'LIKE', $like)
+                    ->orWhere('material',        'LIKE', $like)
+                    ->orWhere('item_master_id',  'LIKE', $like)
+                    ->orWhereHas('brands', fn ($bq) => $bq->where('name', 'LIKE', $like))
+                    ->orWhereHas('meta',   fn ($mq) => $mq->where('keywords', 'LIKE', $like));
+            });
+        }
 
-            $products = Product::where(function ($query) use ($like) {
-                $query->where('item_description', 'LIKE', $like)
-                      ->orWhere('material',        'LIKE', $like)
-                      ->orWhere('item_master_id',  'LIKE', $like)
-                      ->orWhereHas('brands', fn ($bq) => $bq->where('name', 'LIKE', $like))
-                      ->orWhereHas('meta', fn ($mq) => $mq->where('keywords', 'LIKE', $like));
-            })
-            ->orderBy('item_description')
+        if ($categoryId > 0) {
+            $query->whereHas('categories', fn ($q) => $q->where('product_categories.id', $categoryId));
+        }
+
+        if ($brandId > 0) {
+            $query->whereHas('brands', fn ($q) => $q->where('brands.id', $brandId));
+        }
+
+        if ($collectionId > 0) {
+            $query->whereHas('collections', fn ($q) => $q->where('collections.id', $collectionId));
+        }
+
+        if ($year > 0) {
+            $query->where('product_year', $year);
+        }
+
+        $products = $query->orderBy('item_description')
             ->paginate(24)
             ->withQueryString();
 
-            $heading = 'Results for "' . $q . '"';
-        } else {
-            $products = Product::orderBy('item_description')
-                ->paginate(24)
-                ->withQueryString();
-
-            $heading = 'All Products';
+        // Build heading
+        $heading = 'All Products';
+        if ($q !== '') {
+            $heading = 'Results for &ldquo;' . e($q) . '&rdquo;';
         }
 
         return view('products.index', [
-            'products'    => $products,
-            'heading'     => $heading,
-            'scope'       => null,
-            'searchQuery' => $q,
+            'products'      => $products,
+            'heading'       => $heading,
+            'scope'         => null,
+            'searchQuery'   => $q,
+            'activeCatId'   => $categoryId,
+            'activeBrandId' => $brandId,
+            'activeColId'   => $collectionId,
+            'activeYear'    => $year,
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\View\Composers\NavigationComposer;
+use App\View\Composers\ProductsFilterComposer;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapFive();
 
         View::composer('partials.header', NavigationComposer::class);
+        View::composer('products.index', ProductsFilterComposer::class);
 
         // Enforce a strong password policy application-wide
         Password::defaults(function () {
